@@ -64,7 +64,7 @@ export default function Login() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="bg-white border-[#C2CDFF] rounded-xl h-12 px-4 focus-visible:ring-[#C2CDFF]"
+                className="bg-[#FFFAFA] border-[#C2CDFF] rounded-xl h-12 px-4 focus-visible:ring-[#C2CDFF]"
               />
             </div>
             <div className="space-y-1">
@@ -75,7 +75,7 @@ export default function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="bg-white border-[#C2CDFF] rounded-xl h-12 px-4 focus-visible:ring-[#C2CDFF]"
+                className="bg-[#FFFAFA] border-[#C2CDFF] rounded-xl h-12 px-4 focus-visible:ring-[#C2CDFF]"
               />
             </div>
             

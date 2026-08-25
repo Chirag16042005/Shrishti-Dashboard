@@ -20,7 +20,7 @@ export function CustomDropdown({ value, onChange, options, label }: any) {
   return (
     <div className="relative" ref={dropdownRef}>
       <div 
-        className="flex h-11 w-full items-center justify-between rounded-xl border-0 bg-[#F4F6FC] px-4 py-2 text-sm shadow-none cursor-pointer"
+        className="flex h-11 w-full items-center justify-between rounded-xl border-0 bg-[#FFFAFA] px-4 py-2 text-sm shadow-none cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
       >
         <div className="flex items-center gap-2">
@@ -36,7 +36,7 @@ export function CustomDropdown({ value, onChange, options, label }: any) {
       </div>
       
       {isOpen && (
-        <div className="absolute z-50 w-full mt-1 bg-white border border-secondary/10 rounded-xl shadow-lg py-1 max-h-60 overflow-auto">
+        <div className="absolute z-50 w-full mt-1 bg-[#FFFAFA] border border-secondary/10 rounded-xl shadow-lg py-1 max-h-60 overflow-auto">
           {options.map((opt: any) => (
             <div 
               key={opt.value}

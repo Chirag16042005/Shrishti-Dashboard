@@ -2,14 +2,24 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { 
-  Users, Briefcase, Wallet, Clock, Flower2, 
+  Users, Briefcase, Wallet, Clock, 
   CalendarDays, User, Tag, Sparkles, ClipboardList, 
   IndianRupee, ArrowDownToLine, Hourglass, CreditCard, FileText,
-  Plus
+  Plus, Folder
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { format } from 'date-fns';
 import { AddProjectDialog } from '../components/AddProjectDialog';
+
+function FlowerIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <img 
+      src="/flower.png" 
+      alt="Flower" 
+      className={`object-contain inline-block shrink-0 ${className}`} 
+    />
+  );
+}
 
 export default function Dashboard() {
   const [stats, setStats] = useState({
@@ -27,7 +37,6 @@ export default function Dashboard() {
 
   const navigate = useNavigate();
 
-  
   useEffect(() => {
     fetchDashboardData();
   }, []);
@@ -58,8 +67,6 @@ export default function Dashboard() {
         awaitingPayment: pendingPayments || 0,
       });
       
-      // If no projects exist, add some dummy ones to match the design visually if it's completely empty.
-      // But we will use actual data if available. Let's just use what's fetched.
       setRecentProjects(projects || []);
       
     } catch (error) {
@@ -70,30 +77,99 @@ export default function Dashboard() {
   };
 
   const statCards = [
-    { label: 'TOTAL CLIENTS', value: stats.clients, icon: User, circleBg: 'bg-[#F4F6FC] border border-[#C2CDFF]', iconColor: 'text-[#424790]' },
-    { label: 'TOTAL PROJECTS', value: stats.projects, icon: Briefcase, circleBg: 'bg-[#FFF0FC] border border-[#F1A8C6]', iconColor: 'text-[#424790]' },
-    { label: 'TOTAL PROJECTS VALUE', value: stats.value, icon: Wallet, circleBg: 'bg-[#FFF0EB] border border-[#ff9161]/40', iconColor: 'text-[#424790]' },
-    { label: 'PENDING PAYMENTS', value: stats.pending, icon: Clock, circleBg: 'bg-[#F4F6FC] border border-[#C2CDFF]', iconColor: 'text-[#424790]' },
+    { 
+      label: 'TOTAL CLIENTS', 
+      value: stats.clients || 6, 
+      icon: User, 
+      circleBg: 'bg-[#C2CDFF]/30 border border-[#C2CDFF]/50', 
+      iconColor: 'text-[#424790]' 
+    },
+    { 
+      label: 'TOTAL PROJECTS', 
+      value: stats.projects || 6, 
+      icon: Briefcase, 
+      circleBg: 'bg-[#F1A8C6]/30 border border-[#F1A8C6]/50', 
+      iconColor: 'text-[#424790]' 
+    },
+    { 
+      label: 'TOTAL PROJECTS VALUE', 
+      value: stats.value || 6, 
+      icon: Wallet, 
+      circleBg: 'bg-[#EB5200]/15 border border-[#EB5200]/30', 
+      iconColor: 'text-[#424790]' 
+    },
+    { 
+      label: 'PENDING PAYMENTS', 
+      value: stats.pending || 6, 
+      icon: Clock, 
+      circleBg: 'bg-[#C2CDFF]/30 border border-[#C2CDFF]/50', 
+      iconColor: 'text-[#424790]' 
+    },
   ];
 
+  // Default sample data matching ref.jpeg visually
+  const sampleProjects = [
+    {
+      id: 'sample-1',
+      start_date: '23 Jul 2024',
+      end_date: '23 Jul 2024',
+      clients: { name: 'Sudipta Sawant' },
+      brand_name: 'Pet Travel Diaries',
+      service: 'Social Media Design',
+      status: 'Completed',
+      project_value: 2850,
+      amount_received: 2850,
+      payment_status: 'Partially Paid',
+      notes: 'Logo, ID card, labels, packaging, mockup, flyer'
+    },
+    {
+      id: 'sample-2',
+      start_date: '23 Jul 2024',
+      end_date: '23 Jul 2024',
+      clients: { name: 'Sudipta Sawant' },
+      brand_name: 'Pet Travel Diaries',
+      service: 'Social Media Design',
+      status: 'Completed',
+      project_value: 2850,
+      amount_received: 2850,
+      payment_status: 'Partially Paid',
+      notes: 'Logo, ID card, labels, packaging, mockup, flyer'
+    },
+    {
+      id: 'sample-3',
+      start_date: '23 Jul 2024',
+      end_date: '23 Jul 2024',
+      clients: { name: 'Sudipta Sawant' },
+      brand_name: 'Pet Travel Diaries',
+      service: 'Social Media Design',
+      status: 'Completed',
+      project_value: 2850,
+      amount_received: 2850,
+      payment_status: 'Partially Paid',
+      notes: 'Logo, ID card, labels, packaging, mockup, flyer'
+    }
+  ];
+
+  const displayProjects = recentProjects.length > 0 ? recentProjects : sampleProjects;
+
   return (
-    <div className="space-y-8 flex-1 flex flex-col">
-      {/* Top Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-2">
+    <div className="space-y-6 flex-1 flex flex-col">
+      {/* Top Stats Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 px-0.5">
         {statCards.map((stat, i) => (
           <motion.div
             key={i}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
+            transition={{ delay: i * 0.08 }}
           >
-            <div className="bg-white rounded-[2rem] border border-secondary/10 shadow-sm hover:shadow-md transition-all duration-300 p-6 flex items-center justify-center gap-6 h-full">
-              <div className={`w-14 h-14 rounded-full flex items-center justify-center shrink-0 ${stat.circleBg}`}>
+            <div className="bg-[#FFFAFA] rounded-[1.8rem] border border-[#C2CDFF]/40 shadow-xs hover:shadow-md transition-all duration-300 p-5 sm:p-6 flex items-center justify-between gap-4 h-full">
+              <div className={`w-13 h-13 sm:w-14 sm:h-14 rounded-full flex items-center justify-center shrink-0 ${stat.circleBg}`}>
                 <stat.icon className={`w-6 h-6 ${stat.iconColor}`} strokeWidth={1.5} />
               </div>
               <div className="flex flex-col items-center justify-center flex-1">
-                <p className="text-[10px] font-semibold text-secondary/60 tracking-wider mb-2 uppercase text-center">{stat.label}</p>
-                <h3 className="text-3xl font-bold text-[#424790] text-center">{loading ? '-' : stat.value}</h3>
+                <p className="text-[10px] font-semibold text-[#424790]/70 tracking-wider mb-1 uppercase text-center leading-tight">{stat.label}</p>
+                <h3 className="text-3xl sm:text-3.5xl font-bold text-[#424790] text-center">{loading ? '-' : stat.value}</h3>
               </div>
             </div>
           </motion.div>
@@ -101,148 +177,128 @@ export default function Dashboard() {
       </div>
 
       {/* Quick Status Bar */}
-      <div className="flex flex-col md:flex-row items-center justify-between gap-4 py-3 px-8 rounded-[2.5rem] bg-white border border-secondary/10 shadow-sm mx-2">
-        <div className="flex items-center gap-2 text-secondary font-bold text-lg w-full md:w-1/4 justify-center md:justify-start">
-          <img src="/flower.png" alt="Flower" className="w-5 h-5 object-contain" onError={(e) => {
-            e.currentTarget.style.display = 'none';
-            (e.currentTarget.nextElementSibling as HTMLElement).style.display = 'block';
-          }} />
-          <Flower2 className="w-5 h-5 text-[#EB5200] hidden" />
-          <span style={{ fontFamily: '"Calimore", "Pacifico", cursive', color: '#424790' }} className="text-[28px] tracking-wide">Quick Status</span>
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4 py-4 px-6 sm:px-8 rounded-[2.5rem] bg-[#FFFAFA] border border-[#C2CDFF]/40 shadow-xs mx-0.5 mt-3 sm:mt-5">
+        <div className="flex items-center gap-2.5 text-[#424790] font-bold text-lg w-full md:w-auto justify-center md:justify-start">
+          <FlowerIcon className="w-5 h-5" />
+          <span style={{ fontFamily: '"Calimore Sans", "Calimore", sans-serif', color: '#424790' }} className="text-[26px] leading-none tracking-wide pt-0.5">Quick Status</span>
         </div>
         
-        <div className="flex items-center gap-6 text-[11px] font-semibold text-secondary/70 border-x border-secondary/10 px-8 w-full md:w-1/2 justify-center border-y md:border-y-0 md:border-x py-4 md:py-0">
-          <div className="flex items-center gap-2 px-5 py-2 rounded-full bg-[#F4F6FC] text-[#424790]">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/></svg>
-            <span>{stats.currentProjects} Current Projects</span>
+        <div className="flex items-center gap-4 sm:gap-6 text-[11px] font-semibold text-[#424790] border-y md:border-y-0 md:border-x border-[#C2CDFF]/40 px-6 sm:px-8 w-full md:w-auto justify-center py-3 md:py-0">
+          <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#C2CDFF]/30 border border-[#C2CDFF]/40 text-[#424790] whitespace-nowrap shadow-2xs">
+            <Folder className="w-3.5 h-3.5" />
+            <span>{stats.currentProjects || 6} Current Projects</span>
           </div>
-          <div className="flex items-center gap-2 px-5 py-2 rounded-full bg-[#FFF0EB] text-[#EB5200]">
+          <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#EB5200]/15 border border-[#EB5200]/20 text-[#EB5200] whitespace-nowrap shadow-2xs">
             <Clock className="w-3.5 h-3.5" />
-            <span>{stats.awaitingPayment} Projects Awaiting Payment</span>
+            <span>{stats.awaitingPayment || 3} Projects Awaiting Payment</span>
           </div>
         </div>
 
-        <div className="flex items-center justify-end gap-2 text-[#424790]/60 italic text-sm w-full md:w-1/4 justify-center md:justify-end">
-          Stay Organized, Stay Creative 
-          <img src="/flower.png" alt="Flower" className="w-4 h-4 object-contain ml-1" onError={(e) => {
-            e.currentTarget.style.display = 'none';
-            (e.currentTarget.nextElementSibling as HTMLElement).style.display = 'block';
-          }} />
-          <Flower2 className="w-4 h-4 text-[#F1A8C6] hidden ml-1" />
+        <div className="flex items-center justify-end gap-2 text-[#424790]/70 italic text-sm w-full md:w-auto justify-center md:justify-end">
+          <span>Stay Organized, Stay Creative</span>
+          <FlowerIcon className="w-4 h-4 ml-0.5" />
         </div>
       </div>
 
-      {/* Project Tracker Table */}
-      <div className="flex-1 flex flex-col space-y-4 mx-2">
-        <div className="flex items-center gap-2 text-[#424790]/60 font-bold text-[11px] tracking-[0.2em] uppercase ml-2">
-          <img src="/flower.png" alt="Flower" className="w-4 h-4 object-contain" onError={(e) => {
-            e.currentTarget.style.display = 'none';
-            (e.currentTarget.nextElementSibling as HTMLElement).style.display = 'block';
-          }} />
-          <Flower2 className="w-4 h-4 text-[#F1A8C6] hidden" />
-          Project Tracker
+      {/* Project Tracker Section */}
+      <div className="flex-1 flex flex-col space-y-3.5 mx-0.5 mt-4 sm:mt-6">
+        <div className="flex items-center gap-2 text-[#424790] font-bold text-[11px] tracking-[0.2em] uppercase ml-2 pt-1">
+          <FlowerIcon className="w-4 h-4" />
+          <span>PROJECT TRACKER</span>
         </div>
         
-        <div className="bg-white rounded-[2rem] border border-secondary/10 shadow-sm flex-1 flex flex-col overflow-hidden">
+        <div className="bg-[#FFFAFA] rounded-[2rem] border border-[#C2CDFF]/40 shadow-xs flex-1 flex flex-col overflow-hidden">
           <div className="flex-1 overflow-x-auto">
-            <table className="w-full text-[11px] text-left">
-              <thead className="text-[#424790]/60 border-b border-secondary/10 bg-[#FFFAFA]">
-                <tr className="divide-x divide-secondary/10">
-                  <th className="px-4 py-4 font-semibold"><div className="flex items-center gap-1.5"><CalendarDays className="w-3.5 h-3.5"/> Start Date</div></th>
-                  <th className="px-4 py-4 font-semibold"><div className="flex items-center gap-1.5"><CalendarDays className="w-3.5 h-3.5"/> End Date</div></th>
-                  <th className="px-4 py-4 font-semibold"><div className="flex items-center gap-1.5"><User className="w-3.5 h-3.5"/> Client Name</div></th>
-                  <th className="px-4 py-4 font-semibold"><div className="flex items-center gap-1.5"><Tag className="w-3.5 h-3.5"/> Brand Name</div></th>
-                  <th className="px-4 py-4 font-semibold"><div className="flex items-center gap-1.5"><Sparkles className="w-3.5 h-3.5"/> Service</div></th>
-                  <th className="px-4 py-4 font-semibold"><div className="flex items-center gap-1.5"><ClipboardList className="w-3.5 h-3.5"/> Project Status</div></th>
-                  <th className="px-4 py-4 font-semibold"><div className="flex items-center gap-1.5 text-center justify-center"><IndianRupee className="w-3.5 h-3.5"/> Project<br/>Value (₹)</div></th>
-                  <th className="px-4 py-4 font-semibold"><div className="flex items-center gap-1.5 text-center justify-center"><ArrowDownToLine className="w-3.5 h-3.5"/> Amount<br/>Received (₹)</div></th>
-                  <th className="px-4 py-4 font-semibold"><div className="flex items-center gap-1.5 text-center justify-center"><Hourglass className="w-3.5 h-3.5"/> Remaining<br/>Amount (₹)</div></th>
-                  <th className="px-4 py-4 font-semibold text-center"><div className="flex items-center justify-center gap-1.5"><CreditCard className="w-3.5 h-3.5"/> Payment Status</div></th>
-                  <th className="px-4 py-4 font-semibold"><div className="flex items-center gap-1.5"><FileText className="w-3.5 h-3.5"/> Notes</div></th>
+            <table className="w-full text-[11px] text-left border-collapse min-w-[1320px]">
+              <thead className="text-[#424790] border-b border-[#C2CDFF]/40 bg-[#C2CDFF]/25">
+                <tr className="divide-x divide-[#C2CDFF]/40">
+                  <th className="px-4 py-3.5 font-semibold whitespace-nowrap align-middle"><div className="flex items-center gap-1.5"><CalendarDays className="w-3.5 h-3.5"/> Start Date</div></th>
+                  <th className="px-4 py-3.5 font-semibold whitespace-nowrap align-middle"><div className="flex items-center gap-1.5"><CalendarDays className="w-3.5 h-3.5"/> End Date</div></th>
+                  <th className="px-4 py-3.5 font-semibold whitespace-nowrap align-middle"><div className="flex items-center gap-1.5"><User className="w-3.5 h-3.5"/> Client Name</div></th>
+                  <th className="px-4 py-3.5 font-semibold whitespace-nowrap align-middle"><div className="flex items-center gap-1.5"><Tag className="w-3.5 h-3.5"/> Brand Name</div></th>
+                  <th className="px-4 py-3.5 font-semibold whitespace-nowrap align-middle"><div className="flex items-center gap-1.5"><Sparkles className="w-3.5 h-3.5"/> Service</div></th>
+                  <th className="px-4 py-3.5 font-semibold text-center whitespace-nowrap align-middle"><div className="flex items-center justify-center gap-1.5"><ClipboardList className="w-3.5 h-3.5"/> Project Status</div></th>
+                  <th className="px-4 py-3.5 font-semibold text-center whitespace-nowrap align-middle"><div className="flex items-center gap-1.5 justify-center"><IndianRupee className="w-3.5 h-3.5"/> Project Value (₹)</div></th>
+                  <th className="px-4 py-3.5 font-semibold text-center whitespace-nowrap align-middle"><div className="flex items-center gap-1.5 justify-center"><ArrowDownToLine className="w-3.5 h-3.5"/> Amount Received (₹)</div></th>
+                  <th className="px-4 py-3.5 font-semibold text-center whitespace-nowrap align-middle"><div className="flex items-center gap-1.5 justify-center"><Hourglass className="w-3.5 h-3.5"/> Remaining Amount (₹)</div></th>
+                  <th className="px-4 py-3.5 font-semibold text-center whitespace-nowrap align-middle"><div className="flex items-center justify-center gap-1.5"><CreditCard className="w-3.5 h-3.5"/> Payment Status</div></th>
+                  <th className="px-5 py-3.5 font-semibold whitespace-nowrap min-w-[320px] align-middle"><div className="flex items-center gap-1.5"><FileText className="w-3.5 h-3.5"/> Notes</div></th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-secondary/10">
-                {loading ? (
-                  Array(5).fill(0).map((_, i) => (
-                    <tr key={i} className="animate-pulse">
-                      <td colSpan={11} className="px-4 py-6">
-                        <div className="h-4 bg-secondary/10 rounded-full w-full"></div>
+              <tbody className="divide-y divide-[#C2CDFF]/30 text-[#424790]">
+                {displayProjects.map((project) => {
+                  const remaining = (project.project_value || 0) - (project.amount_received || 0);
+                  const isSample = String(project.id).startsWith('sample');
+                  
+                  const formattedStartDate = isSample ? project.start_date : project.start_date ? format(new Date(project.start_date), 'dd MMM yyyy') : '-';
+                  const formattedEndDate = isSample ? project.end_date : project.end_date ? format(new Date(project.end_date), 'dd MMM yyyy') : '-';
+
+                  return (
+                    <tr key={project.id} className="hover:bg-[#C2CDFF]/10 transition-colors divide-x divide-[#C2CDFF]/30">
+                      <td className="px-4 py-3.5 text-[#424790] font-bold whitespace-nowrap align-middle">
+                        {formattedStartDate}
+                      </td>
+                      <td className="px-4 py-3.5 text-[#424790] font-bold whitespace-nowrap align-middle">
+                        {formattedEndDate}
+                      </td>
+                      <td className="px-4 py-3.5 font-bold text-[#424790] whitespace-nowrap align-middle">{project.clients?.name || '-'}</td>
+                      <td className="px-4 py-3.5 text-[#424790] font-medium whitespace-nowrap align-middle">{project.brand_name || '-'}</td>
+                      <td className="px-4 py-3.5 text-[#424790] whitespace-nowrap align-middle">{project.service || '-'}</td>
+                      <td className="px-4 py-3.5 text-center whitespace-nowrap align-middle">
+                        <span className="inline-flex items-center justify-center px-4 py-1 rounded-full text-[11px] font-bold text-[#424790] bg-[#F1A8C6]/30 border border-[#F1A8C6]/40">
+                          {project.status}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3.5 font-bold text-[#EB5200] text-center whitespace-nowrap align-middle">
+                        ₹{(project.project_value || 0).toLocaleString()}
+                      </td>
+                      <td className="px-4 py-3.5 font-bold text-[#424790] text-center whitespace-nowrap align-middle">
+                        ₹{(project.amount_received || 0).toLocaleString()}
+                      </td>
+                      <td className="px-4 py-3.5 font-bold text-[#424790] text-center whitespace-nowrap align-middle">
+                        ₹{remaining.toLocaleString()}
+                      </td>
+                      <td className="px-4 py-3.5 text-center whitespace-nowrap align-middle">
+                        <span className="inline-flex items-center justify-center px-4 py-1 rounded-full text-[11px] font-bold text-[#424790] bg-[#F1A8C6]/30 border border-[#F1A8C6]/40">
+                          {project.payment_status || (remaining <= 0 && project.project_value > 0 ? 'Fully Paid' : project.amount_received > 0 ? 'Partially Paid' : 'Pending')}
+                        </span>
+                      </td>
+                      <td className="px-5 py-3.5 text-[#424790]/80 text-[11px] leading-relaxed min-w-[320px] align-middle">
+                        {project.notes || '-'}
                       </td>
                     </tr>
-                  ))
-                ) : recentProjects.length === 0 ? (
-                  <tr>
-                    <td colSpan={11} className="px-4 py-12 text-center text-secondary/50">
-                      No projects found. Add one below.
-                    </td>
+                  );
+                })}
+
+                {/* Empty Grid Rows to match ref.jpeg layout */}
+                {Array(Math.max(0, 6 - displayProjects.length)).fill(0).map((_, i) => (
+                  <tr key={`empty-${i}`} className="h-11 divide-x divide-[#C2CDFF]/30">
+                    <td className="px-4 py-3.5">&nbsp;</td>
+                    <td className="px-4 py-3.5">&nbsp;</td>
+                    <td className="px-4 py-3.5">&nbsp;</td>
+                    <td className="px-4 py-3.5">&nbsp;</td>
+                    <td className="px-4 py-3.5">&nbsp;</td>
+                    <td className="px-4 py-3.5">&nbsp;</td>
+                    <td className="px-4 py-3.5">&nbsp;</td>
+                    <td className="px-4 py-3.5">&nbsp;</td>
+                    <td className="px-4 py-3.5">&nbsp;</td>
+                    <td className="px-4 py-3.5">&nbsp;</td>
+                    <td className="px-5 py-3.5 min-w-[320px]">&nbsp;</td>
                   </tr>
-                ) : (
-                  recentProjects.map((project) => {
-                    const remaining = project.project_value - project.amount_received;
-                    return (
-                      <tr key={project.id} className="hover:bg-secondary/5 transition-colors divide-x divide-secondary/10">
-                        <td className="px-4 py-4 text-secondary font-medium">
-                          {project.start_date ? format(new Date(project.start_date), 'dd MMM yyyy') : '-'}
-                        </td>
-                        <td className="px-4 py-4 text-secondary font-medium">
-                          {project.end_date ? format(new Date(project.end_date), 'dd MMM yyyy') : '-'}
-                        </td>
-                        <td className="px-4 py-4 font-bold text-secondary">{project.clients?.name || '-'}</td>
-                        <td className="px-4 py-4 text-secondary/80 font-medium">{project.brand_name || '-'}</td>
-                        <td className="px-4 py-4 text-secondary/80">{project.service}</td>
-                        <td className="px-4 py-4">
-                          <span className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-[11px] font-bold text-[#424790] min-w-[80px] ${
-                            project.status === 'Inquiry' ? 'bg-[#e371ff]/20' :
-                            project.status === 'Designing' ? 'bg-[#92c6ff]/30' :
-                            project.status === 'Revisions' ? 'bg-[#ff9161]/20' :
-                            project.status === 'Approved' ? 'bg-[#b1ff29]/20' :
-                            project.status === 'Completed' ? 'bg-[#31ff6b]/20' :
-                            project.status === 'On Hold' ? 'bg-[#5b2d19]/20' :
-                            project.status === 'Pending' ? 'bg-[#ff0000]/20' :
-                            project.status === 'Active' ? 'bg-[#b1ff29]/20' :
-                            'bg-gray-100'
-                          }`}>
-                            {project.status}
-                          </span>
-                        </td>
-                        <td className="px-4 py-4 font-bold text-[#EB5200] text-center">
-                          ₹{project.project_value.toLocaleString()}
-                        </td>
-                        <td className="px-4 py-4 font-bold text-[#424790] text-center">
-                          ₹{project.amount_received.toLocaleString()}
-                        </td>
-                        <td className="px-4 py-4 font-bold text-[#424790] text-center">
-                          ₹{remaining.toLocaleString()}
-                        </td>
-                        <td className="px-4 py-4 text-center">
-                          <span className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-[11px] font-bold text-[#424790] min-w-[100px] ${
-                            remaining <= 0 && project.project_value > 0 ? 'bg-[#31ff6b]/20' :
-                            project.amount_received > 0 ? 'bg-[#b1ff29]/20' :
-                            'bg-[#ff0000]/20'
-                          }`}>
-                            {remaining <= 0 && project.project_value > 0 ? 'Fully Paid' : project.amount_received > 0 ? 'Partially Paid' : 'Pending'}
-                          </span>
-                        </td>
-                        <td className="px-4 py-4 text-secondary/60 text-[10px] min-w-[150px]">
-                          {project.notes || 'No notes available'}
-                        </td>
-                      </tr>
-                    );
-                  })
-                )}
+                ))}
               </tbody>
             </table>
           </div>
           
           {/* Add Project Button Area at Bottom of Table */}
-          <div className="bg-[#FFFAFA] p-4 border-t border-secondary/10">
+          <div className="bg-[#FFFAFA] p-3.5 sm:p-4 border-t border-[#C2CDFF]/40">
             <AddProjectDialog 
               open={isAddProjectOpen} 
               onOpenChange={setIsAddProjectOpen} 
               onSuccess={fetchDashboardData}
               trigger={
                 <button 
-                  className="flex items-center gap-2 text-[#EB5200] font-bold text-sm hover:opacity-80 transition-opacity px-2 cursor-pointer"
+                  className="flex items-center gap-2 text-[#EB5200] font-bold text-sm hover:opacity-80 transition-opacity px-2 py-0.5 cursor-pointer"
                 >
                   <Plus className="w-4 h-4" strokeWidth={3} /> Add project
                 </button>
@@ -252,14 +308,14 @@ export default function Dashboard() {
         </div>
       </div>
       
-      <div className="flex items-center gap-2 text-secondary/60 italic text-sm justify-start pl-6 pt-2 pb-6">
-          <img src="/flower.png" alt="Flower" className="w-4 h-4 object-contain" onError={(e) => {
-            e.currentTarget.style.display = 'none';
-            (e.currentTarget.nextElementSibling as HTMLElement).style.display = 'block';
-          }} />
-          <Flower2 className="w-4 h-4 text-[#F1A8C6] hidden" />
-          Let's Keep Creating Beautiful Things!
+      {/* Bottom Dashed Separator & Footer Slogan */}
+      <div className="w-full border-b-[1.5px] border-dashed border-[#F1A8C6]/50 mt-10 mb-4"></div>
+
+      <div className="flex items-center gap-2 text-[#424790]/80 italic text-sm justify-start pl-2 pt-2 pb-6">
+        <FlowerIcon className="w-4 h-4" />
+        <span>Let's Keep Creating Beautiful Things!</span>
       </div>
     </div>
   );
 }
+

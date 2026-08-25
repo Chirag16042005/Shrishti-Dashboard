@@ -123,13 +123,13 @@ export function AddProjectDialog({ open, onOpenChange, onSuccess, trigger, editi
                 value={formData.status} 
                 onChange={(val: string) => setFormData({...formData, status: val})}
                 options={[
-                  { label: 'Inquiry', value: 'Inquiry', color: 'bg-[#e371ff]/20' },
-                  { label: 'Designing', value: 'Designing', color: 'bg-[#92c6ff]/30' },
-                  { label: 'Revisions', value: 'Revisions', color: 'bg-[#ff9161]/20' },
-                  { label: 'Approved', value: 'Approved', color: 'bg-[#b1ff29]/20' },
-                  { label: 'Completed', value: 'Completed', color: 'bg-[#31ff6b]/20' },
-                  { label: 'On Hold', value: 'On Hold', color: 'bg-[#5b2d19]/20' },
-                  { label: 'Pending', value: 'Pending', color: 'bg-[#ff0000]/20' },
+                  { label: 'Inquiry', value: 'Inquiry', color: 'bg-[#C2CDFF]/30' },
+                  { label: 'Designing', value: 'Designing', color: 'bg-[#C2CDFF]/30' },
+                  { label: 'Revisions', value: 'Revisions', color: 'bg-[#C2CDFF]/30' },
+                  { label: 'Approved', value: 'Approved', color: 'bg-[#C2CDFF]/30' },
+                  { label: 'Completed', value: 'Completed', color: 'bg-[#C2CDFF]/30' },
+                  { label: 'On Hold', value: 'On Hold', color: 'bg-[#C2CDFF]/30' },
+                  { label: 'Pending', value: 'Pending', color: 'bg-[#C2CDFF]/30' },
                 ]}
               />
             </div>
@@ -156,9 +156,9 @@ export function AddProjectDialog({ open, onOpenChange, onSuccess, trigger, editi
                   setFormData({...formData, payment_status_selection: val, amount_received: newAmount});
                 }}
                 options={[
-                  { label: 'Pending', value: 'Pending', color: 'bg-[#ff0000]/20' },
-                  { label: 'Partially Paid', value: 'Partially Paid', color: 'bg-[#b1ff29]/20' },
-                  { label: 'Fully Paid', value: 'Fully Paid', color: 'bg-[#31ff6b]/20' },
+                  { label: 'Pending', value: 'Pending', color: 'bg-[#C2CDFF]/30' },
+                  { label: 'Partially Paid', value: 'Partially Paid', color: 'bg-[#C2CDFF]/30' },
+                  { label: 'Fully Paid', value: 'Fully Paid', color: 'bg-[#C2CDFF]/30' },
                 ]}
               />
             </div>
@@ -183,7 +183,7 @@ export function AddProjectDialog({ open, onOpenChange, onSuccess, trigger, editi
           </div>
           <div className="flex justify-end gap-2 pt-4">
             <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Cancel</Button>
-            <Button type="submit" className="bg-[#EB5200] hover:bg-[#EB5200]/90 text-white">{editingProject ? 'Save Changes' : 'Add Project'}</Button>
+            <Button type="submit" className="bg-[#EB5200] hover:bg-[#EB5200]/90 text-[#FFFAFA]">{editingProject ? 'Save Changes' : 'Add Project'}</Button>
           </div>
         </form>
       </DialogContent>

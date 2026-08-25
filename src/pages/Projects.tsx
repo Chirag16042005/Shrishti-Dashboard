@@ -126,15 +126,15 @@ export default function Projects() {
                     </td>
                     <td className="px-6 py-4">
                       <span className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-[11px] font-bold text-[#424790] min-w-[80px] ${
-                        project.status === 'Inquiry' ? 'bg-[#e371ff]/20' :
-                        project.status === 'Designing' ? 'bg-[#92c6ff]/30' :
-                        project.status === 'Revisions' ? 'bg-[#ff9161]/20' :
-                        project.status === 'Approved' ? 'bg-[#b1ff29]/20' :
-                        project.status === 'Completed' ? 'bg-[#31ff6b]/20' :
-                        project.status === 'On Hold' ? 'bg-[#5b2d19]/20' :
-                        project.status === 'Pending' ? 'bg-[#ff0000]/20' :
-                        project.status === 'Active' ? 'bg-[#b1ff29]/20' :
-                        'bg-gray-100'
+                        project.status === 'Inquiry' ? 'bg-[#C2CDFF]/30' :
+                        project.status === 'Designing' ? 'bg-[#C2CDFF]/30' :
+                        project.status === 'Revisions' ? 'bg-[#C2CDFF]/30' :
+                        project.status === 'Approved' ? 'bg-[#C2CDFF]/30' :
+                        project.status === 'Completed' ? 'bg-[#C2CDFF]/30' :
+                        project.status === 'On Hold' ? 'bg-[#C2CDFF]/30' :
+                        project.status === 'Pending' ? 'bg-[#C2CDFF]/30' :
+                        project.status === 'Active' ? 'bg-[#C2CDFF]/30' :
+                        'bg-[#C2CDFF]/20'
                       }`}>
                         {project.status}
                       </span>

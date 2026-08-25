@@ -104,7 +104,7 @@ export default function Payments() {
               placeholder="Search payments..." 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-9 bg-white"
+              className="pl-9 bg-[#FFFAFA]"
             />
           </div>
           
@@ -161,7 +161,7 @@ export default function Payments() {
                   <Input value={formData.notes} onChange={e => setFormData({...formData, notes: e.target.value})} />
                 </div>
                 <div className="flex justify-end gap-2 pt-4">
-                  <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
+                  <Button type="button" variant="ghost" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
                   <Button type="submit">{editingPayment ? 'Save Changes' : 'Record Payment'}</Button>
                 </div>
               </form>
@@ -204,10 +204,10 @@ export default function Payments() {
                     </td>
                     <td className="px-6 py-4">
                       <span className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-[11px] font-bold text-[#424790] min-w-[100px] ${
-                        (payment.status === 'Paid' || payment.status === 'Fully Paid') ? 'bg-[#31ff6b]/20' :
-                        payment.status === 'Pending' ? 'bg-[#ff0000]/20' :
-                        payment.status === 'Partially Paid' ? 'bg-[#b1ff29]/20' :
-                        'bg-red-50 text-red-700 border border-red-200'
+                        (payment.status === 'Paid' || payment.status === 'Fully Paid') ? 'bg-[#C2CDFF]/30' :
+                        payment.status === 'Pending' ? 'bg-[#C2CDFF]/30' :
+                        payment.status === 'Partially Paid' ? 'bg-[#C2CDFF]/30' :
+                        'bg-[#EB5200]/10 text-[#EB5200] border border-[#EB5200]/20'
                       }`}>
                         {payment.status}
                       </span>

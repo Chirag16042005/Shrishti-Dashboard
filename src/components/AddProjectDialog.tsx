@@ -1,9 +1,11 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
+import { saveProjectData } from '../lib/dataService';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { CustomDropdown } from './CustomDropdown';
+import { PROJECT_STATUS_OPTIONS, PAYMENT_STATUS_OPTIONS } from '../lib/statusStyles';
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
 
@@ -13,7 +15,7 @@ export function AddProjectDialog({ open, onOpenChange, onSuccess, trigger, editi
     brand_name: '',
     service: '',
     description: '',
-    status: 'Planning',
+    status: 'Inquiry',
     start_date: '',
     end_date: '',
     project_value: 0,
@@ -30,7 +32,7 @@ export function AddProjectDialog({ open, onOpenChange, onSuccess, trigger, editi
         brand_name: editingProject.brand_name || '',
         service: editingProject.service || '',
         description: editingProject.description || '',
-        status: editingProject.status || 'Planning',
+        status: editingProject.status || 'Inquiry',
         start_date: editingProject.start_date ? editingProject.start_date.split('T')[0] : '',
         end_date: editingProject.end_date ? editingProject.end_date.split('T')[0] : '',
         project_value: editingProject.project_value || 0,
@@ -47,7 +49,7 @@ export function AddProjectDialog({ open, onOpenChange, onSuccess, trigger, editi
   const resetForm = () => {
     setFormData({
       client_name: '', brand_name: '', service: '', description: '', 
-      status: 'Planning', start_date: '', end_date: '', 
+      status: 'Inquiry', start_date: '', end_date: '', 
       project_value: 0, amount_received: 0, priority: 'Medium', notes: '', payment_status_selection: 'Pending'
     });
   };
@@ -55,39 +57,20 @@ export function AddProjectDialog({ open, onOpenChange, onSuccess, trigger, editi
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    let resolvedClientId = editingProject?.client_id || null;
-    
-    if (formData.client_name) {
-      const { data: existingClients } = await supabase.from('clients').select('id, name').ilike('name', formData.client_name);
-      if (existingClients && existingClients.length > 0) {
-        resolvedClientId = existingClients[0].id;
-      } else {
-        const { data: newClient } = await supabase.from('clients').insert([{ name: formData.client_name }]).select('id').single();
-        if (newClient) {
-          resolvedClientId = newClient.id;
-        }
-      }
-    }
-
     const payload = {
-      client_id: resolvedClientId,
       brand_name: formData.brand_name,
       service: formData.service,
       description: formData.description,
       status: formData.status,
       start_date: formData.start_date || null,
       end_date: formData.end_date || null,
-      project_value: formData.project_value,
-      amount_received: formData.amount_received,
+      project_value: Number(formData.project_value || 0),
+      amount_received: Number(formData.amount_received || 0),
       priority: formData.priority,
       notes: formData.notes
     };
 
-    if (editingProject) {
-      await supabase.from('projects').update(payload).eq('id', editingProject.id);
-    } else {
-      await supabase.from('projects').insert([payload]);
-    }
+    await saveProjectData(payload, formData.client_name, editingProject?.id);
     
     onOpenChange(false);
     resetForm();
@@ -122,15 +105,7 @@ export function AddProjectDialog({ open, onOpenChange, onSuccess, trigger, editi
               <CustomDropdown 
                 value={formData.status} 
                 onChange={(val: string) => setFormData({...formData, status: val})}
-                options={[
-                  { label: 'Inquiry', value: 'Inquiry', color: 'bg-[#C2CDFF]/30' },
-                  { label: 'Designing', value: 'Designing', color: 'bg-[#C2CDFF]/30' },
-                  { label: 'Revisions', value: 'Revisions', color: 'bg-[#C2CDFF]/30' },
-                  { label: 'Approved', value: 'Approved', color: 'bg-[#C2CDFF]/30' },
-                  { label: 'Completed', value: 'Completed', color: 'bg-[#C2CDFF]/30' },
-                  { label: 'On Hold', value: 'On Hold', color: 'bg-[#C2CDFF]/30' },
-                  { label: 'Pending', value: 'Pending', color: 'bg-[#C2CDFF]/30' },
-                ]}
+                options={PROJECT_STATUS_OPTIONS}
               />
             </div>
             <div className="space-y-2">
@@ -155,11 +130,7 @@ export function AddProjectDialog({ open, onOpenChange, onSuccess, trigger, editi
                   if (val === 'Pending') newAmount = 0;
                   setFormData({...formData, payment_status_selection: val, amount_received: newAmount});
                 }}
-                options={[
-                  { label: 'Pending', value: 'Pending', color: 'bg-[#C2CDFF]/30' },
-                  { label: 'Partially Paid', value: 'Partially Paid', color: 'bg-[#C2CDFF]/30' },
-                  { label: 'Fully Paid', value: 'Fully Paid', color: 'bg-[#C2CDFF]/30' },
-                ]}
+                options={PAYMENT_STATUS_OPTIONS}
               />
             </div>
             {formData.payment_status_selection === 'Partially Paid' && (

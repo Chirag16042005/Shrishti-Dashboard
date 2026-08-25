@@ -25,7 +25,7 @@ export function CustomDropdown({ value, onChange, options, label }: any) {
       >
         <div className="flex items-center gap-2">
           {selectedOption?.color ? (
-            <span className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-[11px] font-bold text-[#424790] min-w-[80px] ${selectedOption.color}`}>
+            <span className={`inline-flex items-center justify-center px-4 py-1 rounded-full text-[11px] font-bold min-w-[90px] ${selectedOption.color}`}>
               {selectedOption.label}
             </span>
           ) : (
@@ -36,18 +36,18 @@ export function CustomDropdown({ value, onChange, options, label }: any) {
       </div>
       
       {isOpen && (
-        <div className="absolute z-50 w-full mt-1 bg-[#FFFAFA] border border-secondary/10 rounded-xl shadow-lg py-1 max-h-60 overflow-auto">
+        <div className="absolute z-50 w-full mt-1 bg-[#FFFAFA] border border-[#C2CDFF]/40 rounded-xl shadow-lg py-1.5 max-h-60 overflow-auto">
           {options.map((opt: any) => (
             <div 
               key={opt.value}
-              className="px-4 py-2 hover:bg-secondary/5 cursor-pointer flex items-center"
+              className="px-3 py-1.5 hover:bg-[#C2CDFF]/20 cursor-pointer flex items-center"
               onClick={() => {
                 onChange(opt.value);
                 setIsOpen(false);
               }}
             >
               {opt.color ? (
-                <span className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-[11px] font-bold text-[#424790] min-w-[80px] ${opt.color}`}>
+                <span className={`inline-flex items-center justify-center px-4 py-1 rounded-full text-[11px] font-bold min-w-[90px] ${opt.color}`}>
                   {opt.label}
                 </span>
               ) : (

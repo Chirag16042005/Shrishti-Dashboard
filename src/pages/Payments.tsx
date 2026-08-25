@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from '../components/ui/label';
 import { Plus, Search, Edit2, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
+import { getPaymentStatusBadgeClass } from '../lib/statusStyles';
 
 export default function Payments() {
   const [payments, setPayments] = useState<any[]>([]);
@@ -203,12 +204,7 @@ export default function Payments() {
                       {payment.projects?.brand_name || payment.projects?.service || '-'}
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-[11px] font-bold text-[#424790] min-w-[100px] ${
-                        (payment.status === 'Paid' || payment.status === 'Fully Paid') ? 'bg-[#C2CDFF]/30' :
-                        payment.status === 'Pending' ? 'bg-[#C2CDFF]/30' :
-                        payment.status === 'Partially Paid' ? 'bg-[#C2CDFF]/30' :
-                        'bg-[#EB5200]/10 text-[#EB5200] border border-[#EB5200]/20'
-                      }`}>
+                      <span className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-[11px] font-bold min-w-[100px] ${getPaymentStatusBadgeClass(payment.status)}`}>
                         {payment.status}
                       </span>
                     </td>

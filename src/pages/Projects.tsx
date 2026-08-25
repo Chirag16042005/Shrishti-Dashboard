@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
+import { getProjectsData, getClientsData, deleteProjectData } from '../lib/dataService';
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Plus, Search, Edit2, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { AddProjectDialog } from '../components/AddProjectDialog';
+import { getProjectStatusBadgeClass } from '../lib/statusStyles';
 
 export default function Projects() {
   const [projects, setProjects] = useState<any[]>([]);
@@ -15,8 +17,6 @@ export default function Projects() {
   
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<any>(null);
-  
-  
 
   useEffect(() => {
     fetchData();
@@ -24,29 +24,27 @@ export default function Projects() {
 
   const fetchData = async () => {
     setLoading(true);
-    const [projectsRes, clientsRes] = await Promise.all([
-      supabase.from('projects').select('*, clients(name)').order('created_at', { ascending: false }),
-      supabase.from('clients').select('id, name')
+    const [projs, clis] = await Promise.all([
+      getProjectsData(),
+      getClientsData()
     ]);
     
-    if (projectsRes.data) setProjects(projectsRes.data);
-    if (clientsRes.data) setClients(clientsRes.data);
+    setProjects(projs);
+    setClients(clis);
     setLoading(false);
   };
 
-  
-
   const handleEdit = (project: any) => {
     setEditingProject(project);
-    
     setIsDialogOpen(true);
   };
 
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+
   const handleDelete = async (id: string) => {
-    if (confirm('Are you sure you want to delete this project?')) {
-      await supabase.from('projects').delete().eq('id', id);
-      fetchData();
-    }
+    await deleteProjectData(id);
+    setConfirmDeleteId(null);
+    fetchData();
   };
 
   const filteredProjects = projects.filter(p => 
@@ -125,30 +123,40 @@ export default function Projects() {
                       {project.end_date ? format(new Date(project.end_date), 'dd MMM yy') : '-'}
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-[11px] font-bold text-[#424790] min-w-[80px] ${
-                        project.status === 'Inquiry' ? 'bg-[#C2CDFF]/30' :
-                        project.status === 'Designing' ? 'bg-[#C2CDFF]/30' :
-                        project.status === 'Revisions' ? 'bg-[#C2CDFF]/30' :
-                        project.status === 'Approved' ? 'bg-[#C2CDFF]/30' :
-                        project.status === 'Completed' ? 'bg-[#C2CDFF]/30' :
-                        project.status === 'On Hold' ? 'bg-[#C2CDFF]/30' :
-                        project.status === 'Pending' ? 'bg-[#C2CDFF]/30' :
-                        project.status === 'Active' ? 'bg-[#C2CDFF]/30' :
-                        'bg-[#C2CDFF]/20'
-                      }`}>
+                      <span className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-[11px] font-bold min-w-[80px] ${getProjectStatusBadgeClass(project.status)}`}>
                         {project.status}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right font-medium text-secondary">
                       ₹{project.project_value.toLocaleString()}
                     </td>
-                    <td className="px-6 py-4 text-right space-x-2">
-                      <Button variant="ghost" size="icon" onClick={() => handleEdit(project)}>
-                        <Edit2 className="w-4 h-4" />
-                      </Button>
-                      <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10" onClick={() => handleDelete(project.id)}>
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
+                    <td className="px-6 py-4 text-right">
+                      {confirmDeleteId === project.id ? (
+                        <div className="inline-flex items-center gap-1.5 animate-fadeIn">
+                          <span className="text-xs font-bold text-destructive">Delete?</span>
+                          <button
+                            onClick={() => handleDelete(project.id)}
+                            className="px-2 py-1 rounded bg-destructive text-white text-xs font-bold hover:bg-destructive/90 transition-colors cursor-pointer"
+                          >
+                            Yes
+                          </button>
+                          <button
+                            onClick={() => setConfirmDeleteId(null)}
+                            className="px-2 py-1 rounded bg-secondary/10 text-secondary text-xs font-bold hover:bg-secondary/20 transition-colors cursor-pointer"
+                          >
+                            No
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="inline-flex items-center gap-1">
+                          <Button variant="ghost" size="icon" onClick={() => handleEdit(project)}>
+                            <Edit2 className="w-4 h-4" />
+                          </Button>
+                          <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10" onClick={() => setConfirmDeleteId(project.id)}>
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      )}
                     </td>
                   </tr>
                 ))

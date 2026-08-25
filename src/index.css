@@ -1,0 +1,69 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+
+@font-face {
+  font-family: 'Calimore';
+  src: url('/calimore.ttf') format('truetype'),
+       url('/calimore.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@theme {
+  --color-primary: #EB5200;
+  --color-secondary: #424790;
+  --color-accent: #C2CDFF;
+  --color-muted: #F1A8C6;
+  --color-background: #FFFAFA;
+
+  --font-sans: 'Montserrat', sans-serif;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 17 100% 46%; /* #EB5200 */
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 236 37% 41%; /* #424790 */
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 335 73% 80%; /* #F1A8C6 */
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 229 100% 88%; /* #C2CDFF */
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 17 100% 46%;
+
+    --radius: 0.75rem;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--foreground);
+    font-family: 'Montserrat', sans-serif;
+  }
+}
+
+@layer utilities {
+  .glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+}
